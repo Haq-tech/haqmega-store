@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HAQ MEGA STORE - Powerful PWA eCommerce</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="HAQ MEGA STORE - The most advanced, fully offline-capable, PWA eCommerce frontend. Shop groceries, books, fashion, and electronics.">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="splash.png" sizes="512x512"/>
+  <meta name="theme-color" content="#1e293b"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <link rel="apple-touch-icon" href="splash.png"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <!-- Splash install prompt -->
+  <div id="installPrompt" class="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-80 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-8 text-center shadow-xl">
+      <img src="splash.png" alt="Install HAQ MEGA STORE" class="mx-auto mb-2 w-20 h-20"/>
+      <p class="font-semibold text-lg mb-4">Install HAQ MEGA STORE for the best experience!</p>
+      <button id="installBtn" class="bg-blue-600 text-white px-6 py-2 rounded font-bold shadow hover:bg-blue-800">Install</button>
+      <button id="closeInstallPrompt" class="ml-4 text-gray-500">Later</button>
+    </div>
+  </div>
+
+  <!-- Floating Go to Top button -->
+  <button id="goTopBtn" class="fixed bottom-6 right-6 z-40 bg-blue-800 text-white rounded-full p-3 shadow-lg hidden transition hover:scale-110">↑</button>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow flex flex-col md:flex-row items-center justify-between px-3 py-2">
+    <div class="flex items-center gap-2">
+      <img src="splash.png" alt="Logo" class="w-12 h-12 rounded-lg"/>
+      <span class="font-bold text-xl md:text-2xl tracking-wide">HAQ MEGA STORE</span>
+      <span class="ml-2 text-xs bg-green-200 text-green-800 rounded px-2 py-1">PWA</span>
+    </div>
+    <nav class="flex gap-4 mt-2 md:mt-0">
+      <a href="#home" class="nav-link font-medium">Home</a>
+      <a href="#categories" class="nav-link font-medium">Categories</a>
+      <a href="#wishlist" class="nav-link font-medium">Wishlist</a>
+      <a href="#cart" class="nav-link font-medium">Cart</a>
+      <a href="#account" class="nav-link font-medium">Account</a>
+    </nav>
+    <div class="flex items-center gap-3 ml-4">
+      <!-- Dark mode toggle -->
+      <button id="darkModeToggle" aria-label="Toggle Dark Mode" class="bg-gray-200 dark:bg-gray-700 p-2 rounded-full shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+        <span id="darkIcon">🌙</span>
+      </button>
+      <!-- Search bar -->
+      <div class="relative">
+        <input id="searchInput" type="search" class="rounded-lg px-3 py-1 w-32 md:w-48 bg-gray-100 dark:bg-gray-700 outline-none" placeholder="Search...">
+        <button id="voiceSearchBtn" class="absolute right-2 top-1 text-gray-400 hover:text-blue-500"><span>🎤</span></button>
+        <ul id="searchSuggestions" class="absolute left-0 top-full bg-white dark:bg-gray-800 shadow rounded w-full mt-1 hidden z-10"></ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main id="mainContent" class="max-w-5xl mx-auto px-2 pt-4 pb-16">
+    <!-- Home/hero -->
+    <section id="home" class="mb-10" data-aos="fade-up">
+      <div class="rounded-xl shadow bg-gradient-to-r from-blue-600 to-fuchsia-500 text-white p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h1 class="font-extrabold text-3xl md:text-5xl mb-2">Shop Smarter, Save Bigger!</h1>
+          <p class="text-lg mb-4">Welcome to HAQ MEGA STORE. Groceries, books, fashion, electronics & more—delivered to your door, fast & secure.</p>
+          <a href="#categories" class="bg-white text-blue-700 font-bold px-6 py-2 rounded shadow hover:bg-gray-200">Browse Categories</a>
+        </div>
+        <img src="images_3.jpeg" alt="Fashion Banner" class="w-40 h-40 rounded-xl shadow-lg object-cover hidden md:block"/>
+      </div>
+      <!-- Flash deals banner with countdown -->
+      <div class="mt-6 rounded-xl bg-yellow-100 p-4 flex items-center justify-between shadow" data-aos="zoom-in">
+        <span class="font-semibold text-xl text-yellow-700">FLASH DEALS!</span>
+        <span class="font-bold text-lg" id="flashCountdown"></span>
+        <a href="#flash" class="bg-yellow-400 text-white px-4 py-1 rounded font-bold shadow hover:bg-yellow-500">Shop Now</a>
+      </div>
+    </section>
+
+    <!-- Featured products & categories -->
+    <section id="featured" class="mb-8" data-aos="fade-in">
+      <h2 class="font-bold text-2xl mb-4">Featured Products</h2>
+      <div id="featuredProducts" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- Categories -->
+    <section id="categories" class="mb-10" data-aos="fade-left">
+      <h2 class="font-bold text-2xl mb-4">Shop by Category</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <a href="#category-fashion" class="category-card bg-pink-100 rounded-lg shadow flex flex-col items-center py-5 hover:scale-105 transition cursor-pointer">
+          <img src="images_3.jpeg" alt="Fashion" class="w-20 h-20 rounded-full mb-2"/>
+          <span class="font-semibold">Fashion</span>
+        </a>
+        <a href="#category-books" class="category-card bg-indigo-100 rounded-lg shadow flex flex-col items-center py-5 hover:scale-105 transition cursor-pointer">
+          <img src="images.jpeg" alt="Books" class="w-20 h-20 rounded-full mb-2"/>
+          <span class="font-semibold">Books</span>
+        </a>
+        <a href="#category-groceries" class="category-card bg-green-100 rounded-lg shadow flex flex-col items-center py-5 hover:scale-105 transition cursor-pointer">
+          <img src="images_2.jpeg" alt="Groceries" class="w-20 h-20 rounded-full mb-2"/>
+          <span class="font-semibold">Groceries</span>
+        </a>
+        <a href="#category-electronics" class="category-card bg-gray-200 rounded-lg shadow flex flex-col items-center py-5 hover:scale-105 transition cursor-pointer">
+          <img src="images_4.jpeg" alt="Electronics" class="w-20 h-20 rounded-full mb-2"/>
+          <span class="font-semibold">Electronics</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Product listing (all products, filtered by search/category) -->
+    <section id="productListPage" class="mb-10" data-aos="fade-in">
+      <h2 class="font-bold text-2xl mb-4" id="productListTitle">All Products</h2>
+      <div class="flex gap-4 mb-4 flex-wrap">
+        <select id="filterCategory" class="rounded px-2 py-1 bg-gray-100 dark:bg-gray-800">
+          <option value="">All Categories</option>
+          <option value="fashion">Fashion</option>
+          <option value="books">Books</option>
+          <option value="groceries">Groceries</option>
+          <option value="electronics">Electronics</option>
+        </select>
+        <select id="filterPrice" class="rounded px-2 py-1 bg-gray-100 dark:bg-gray-800">
+          <option value="">Price: All</option>
+          <option value="low">Low to High</option>
+          <option value="high">High to Low</option>
+        </select>
+        <select id="filterRating" class="rounded px-2 py-1 bg-gray-100 dark:bg-gray-800">
+          <option value="">Rating: All</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4+ Stars</option>
+          <option value="3">3+ Stars</option>
+        </select>
+      </div>
+      <div id="productGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+      <button id="loadMoreBtn" class="mt-6 bg-blue-700 text-white px-4 py-2 rounded shadow hover:bg-blue-900 hidden">Load More</button>
+    </section>
+
+    <!-- Single product page -->
+    <section id="productDetailPage" class="mb-10 hidden" data-aos="fade-up">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Cart page -->
+    <section id="cartPage" class="mb-10 hidden" data-aos="fade-right">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Wishlist page -->
+    <section id="wishlistPage" class="mb-10 hidden" data-aos="fade-right">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Checkout simulation -->
+    <section id="checkoutPage" class="mb-10 hidden" data-aos="fade-up">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Order confirmation -->
+    <section id="orderConfirmPage" class="mb-10 hidden" data-aos="zoom-in">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Account/Login/Register page -->
+    <section id="accountPage" class="mb-10 hidden" data-aos="fade-in">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Live chat simulation -->
+    <section id="chatPage" class="mb-10 hidden" data-aos="fade-in">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- Recently viewed products -->
+    <section id="recentlyViewedSection" class="mb-10" data-aos="fade-in">
+      <h2 class="font-bold text-xl mb-2">Recently Viewed</h2>
+      <div id="recentlyViewedProducts" class="flex gap-4 flex-wrap"></div>
+    </section>
+
+    <!-- About & Legal -->
+    <section id="aboutPage" class="mb-10" data-aos="fade-in">
+      <h2 class="font-bold text-2xl mb-4">About HAQ MEGA STORE</h2>
+      <div id="aboutContent" class="prose dark:prose-invert"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-800 shadow px-4 py-3 flex items-center justify-between text-xs md:text-sm">
+    <span>© 2025 HAQ MEGA STORE. Built by Abdul Haq Abdul Ganiy.</span>
+    <nav class="flex gap-4">
+      <a href="#aboutPage" class="footer-link">About</a>
+      <a href="#chatPage" class="footer-link">Live Chat</a>
+      <a href="#accountPage" class="footer-link">Account</a>
+      <a href="mailto:abdulhaqabdulganiy@gmail.com" class="footer-link">Contact</a>
+    </nav>
+  </footer>
+
+  <!-- Toast/Snackbar -->
+  <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-blue-700 text-white px-6 py-3 rounded shadow-lg z-50 hidden"></div>
+  <div id="snackbar" class="fixed bottom-32 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded shadow-lg z-50 hidden">
+    <span id="snackbarMsg"></span>
+    <button id="snackbarUndoBtn" class="ml-4 underline">Undo</button>
+  </div>
+
+  <!-- Return Policy Modal -->
+  <div id="returnPolicyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white dark:bg-gray-900 rounded-xl p-8 w-full max-w-lg text-gray-900 dark:text-gray-100 relative">
+      <button id="closeReturnPolicy" class="absolute top-2 right-2 text-lg">✖</button>
+      <h3 class="font-bold text-lg mb-2">Return Policy</h3>
+      <div id="returnPolicyContent"></div>
+    </div>
+  </div>
+
+  <!-- Comparison Modal -->
+  <div id="compareModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-900 rounded-xl p-8 w-full max-w-2xl text-gray-900 dark:text-gray-100 relative">
+      <button id="closeCompareModal" class="absolute top-2 right-2 text-lg">✖</button>
+      <h3 class="font-bold text-lg mb-2">Product Comparison</h3>
+      <div id="compareContent"></div>
+    </div>
+  </div>
+
+  <!-- Product video preview modal -->
+  <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-900 rounded-xl p-8 w-full max-w-lg text-gray-900 dark:text-gray-100 relative">
+      <button id="closeVideoModal" class="absolute top-2 right-2 text-lg">✖</button>
+      <div id="videoContent"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+  </script>
+</body>
+</html>

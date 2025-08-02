@@ -1,0 +1,24 @@
+{
+  "name": "HAQ MEGA STORE",
+  "short_name": "HAQ STORE",
+  "description": "HAQ MEGA STORE - Modern offline-capable PWA eCommerce frontend.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#1e293b",
+  "orientation": "portrait",
+  "scope": ".",
+  "icons": [
+    {
+      "src": "splash.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "splash.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "splash_pages": null
+}
